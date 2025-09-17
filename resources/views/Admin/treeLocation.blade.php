@@ -1,0 +1,287 @@
+@extends('Admin.layouts.admin_layout')
+@section('title', 'Manage Locations')
+@section('content')
+
+
+    <div class="container">
+        <div id="flash-message">
+        </div>
+        <br />
+        <!-- Add Item Modal -->
+        <div class="col-lg-4">
+            <!-- Modal Content -->
+            <div class="modal fade" id="addItem" tabindex="-1" role="dialog" aria-labelledby="modal-form" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered  modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body p-0">
+                            <div class="card p-3 p-lg-4">
+                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                <div class="text-center text-md-center mb-4 mt-md-0">
+                                    <h1 class="mb-0 h4">Add Location</h1>
+                                </div>
+                                <form id="store_item" method="post" enctype="multipart/form-data">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-12 mb-4">
+                                                <div class="card border-0 shadow components-section">
+                                                    <div class="card-body">
+                                                    <div class="row mb-4">
+                                                            <div class="col-lg-12 col-sm-12">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputEmail1">State</label>
+                                                                <select class="form-select" id="state_id"
+                                                                    name ="state_id" aria-label="Default select example">
+                                                                    <option value="0">Select State</option>
+                                                                    @if (count($states) > 0)
+                                                                        @foreach ($states as $state)
+                                                                            <option value="{{ $state->id }}">
+                                                                                {{ $state->name }}</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                                <span class="error_msg" id="state_idErr"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                        <div class="row mb-4">
+                                                         <div class="col-lg-6 col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="exampleInputEmail1">City</label>
+                                                                    <select class="form-select" id="city_id"
+                                                                        name ="city_id" aria-label="Default select example">
+                                                                        <option value="0">Select City</option>
+                                                                    </select>
+                                                                    <span class="error_msg" id="city_idErr"></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-lg-6 col-sm-6">
+                                                            <div class="form-group">
+                                                                    <label for="exampleInputEmail1">Area</label>
+                                                                    <select class="form-select" id="area_id"
+                                                                        name ="area_id" aria-label="Default select example">
+                                                                        <option value="0">Select Area</option>
+                                                                    </select>
+                                                                    <span class="error_msg" id="area_idErr"></span>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="row mb-4">
+
+
+                                                            <!-- <div class="col-lg-6 col-sm-6">
+                                                                <div class="form-group">
+                                                                    <label for="exampleInputEmail1">Image</label>
+                                                                    <input type="file" name="main_img"
+                                                                        class="form-control-file" id="main_img"
+                                                                        accept=".png, .jpg, .jpeg">
+                                                                    <span class="error_msg" id="main_imgErr"></span>
+                                                                </div>
+                                                            </div> -->
+
+                                                        </div>
+
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Add</button>
+                                        <button class="btn btn-outline-danger" type="button"
+                                            data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Modal Content -->
+        </div>
+
+
+
+        <!-- Update Brand Modal -->
+        <div id="editItem" class="modal fade" role="dialog" style="margin-top: 106px">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <form id="update_item" method="post" enctype="multipart/form-data">
+                        <div class="modal-body p-0">
+                            <div class="card p-3 p-lg-4">
+                                <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                <div class="text-center text-md-center mb-4 mt-md-0">
+                                    <h1 class="mb-0 h4">Update Location</h1>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-12 mb-4">
+                                            <div class="card border-0 shadow components-section">
+                                                <div class="card-body">
+                                                <div class="row mb-4">
+                                                    <div class="col-lg-6 col-sm-6">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputEmail1">State</label>
+                                                                <select class="form-select" id="state_id_edit"
+                                                                    name ="state_id" aria-label="Default select example">
+                                                                    <option value="0">Select State</option>
+                                                                    @if (count($states) > 0)
+                                                                        @foreach ($states as $state)
+                                                                            <option value="{{ $state->id }}">
+                                                                                {{ $state->name }}</option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                                <span class="error_msg" id="state_id_editErr"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-4">
+                                                        <div class="col-lg-6 col-sm-6">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputEmail1">City</label>
+                                                                <select class="form-select" id="city_id_edit"
+                                                                    name ="city_id" aria-label="Default select example">
+                                                                    <option value="0">Select City</option>
+                                                                </select>
+                                                                <span class="error_msg" id="city_id_editErr"></span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-sm-6">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputEmail1">Area</label>
+                                                                <select class="form-select" id="area_id_edit"
+                                                                    name ="area_id" aria-label="Default select example">
+                                                                    <option value="0">Select Area</option>
+                                                                </select>
+                                                                <input type="hidden" name="id" class="form-control"
+                                                                    id="update_id">
+                                                                <input type="hidden" name="_method" value="PUT">
+                                                                <span class="error_msg" id="area_id_editErr"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-4">
+
+
+                                                        <!-- <div class="col-lg-6 col-sm-6">
+                                                            <div class="form-group">
+                                                                <label for="exampleInputEmail1">Image</label>
+                                                                <input type="file" name="main_img"
+                                                                    class="form-control-file" id="main_img_edit"
+                                                                    accept=".png, .jpg, .jpeg">
+
+                                                                <div class="error_msg" id="main_img_display"></div>
+                                                            </div>
+                                                        </div> -->
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button class="btn btn-outline-danger" type="button"
+                                        data-bs-dismiss="modal">Close</button>
+                                </div>
+
+                                <div class="modal-footer">
+                                    {{-- <button type="submit" class="btn btn-primary">Add</button>
+                                    <button class="btn btn-outline-danger" type="button"
+                                        data-bs-dismiss="modal">Close</button> --}}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="h4">Manage Location</h1>
+                </div>
+            </div><br /><br />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <select class="form-select" id="trash" aria-label="Default select example">
+                                <option value="0" selected><span id="allCount">All</span></option>
+                                <option value="1"><span id="trashCount">Trash</span></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 ml-auto">
+                    <button type="button" class="btn btn-block btn-gray-800 mb-3" onclick="addItemModel()">Add
+                        Location</button>
+                    <button class="btn btn-success mb-3" name="search" id="search"
+                        onclick="updateActivationStatus('1')">&nbsp;Active</button>
+                    <button class="btn btn-warning mb-3" onclick="updateActivationStatus('0')"><i class="fa fa-ban"
+                            aria-hidden="true"></i>&nbsp;In Active</button>
+                    <button class="btn btn-danger mb-3" onclick="commonDelete('1')"><i class="fa fa-trash"
+                            aria-hidden="true" onclick=""></i>&nbsp;Delete</button>
+                    <button class="btn btn-info mb-3" style="display:none;" id="restore_btn"
+                        onclick="commonDelete('0')"><i class="fa fa-trash" aria-hidden="true"
+                            onclick=""></i>&nbsp;Restore</button>
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="card border-0 shadow mb-4">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-centered table-nowrap mb-0 rounded serversideDatatableForItems"
+                            id="myTable">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th><input type="checkbox" class="inline-checkbox" name="multiAction"
+                                            id="multiAction" /> S.No.</th>
+                                    <th>Area</th>
+                                    <th>City</th>
+                                    <th>State</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+@endsection
+@section('script')
+    @parent
+    <script>
+        var locationUrl = "{{ route('locations.index') }}";
+        var locationStore = "{{ route('locations.store') }}";
+        var locationEdit = '{{ route('locations.edit', ':id') }}';
+        var getLocation = '{{ route('location', ':id') }}';
+        var locationUpdate = '{{ route('locations.update', ':id') }}';
+        var statusUpdate = '{{ route('locations-status') }}';
+        var deleteUpdate = '{{ route('locations-delete') }}';
+        var getCity = '{{ route('getCities', ':id') }}';
+        var getArea = '{{ route('area', ':id') }}';
+    </script>
+    <script src="{{ asset('admin/js/treeLocations.js') }}"></script>
+    <script src="{{ asset('admin/js/commonUpdates.js') }}"></script>
+@endsection

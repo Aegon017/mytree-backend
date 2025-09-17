@@ -1,0 +1,3747 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Trees API",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "https://arboraid.co/beta/public"
+        },
+        {
+            "url": "http://localhost:8000"
+        }
+    ],
+    "paths": {
+        "/api/signup": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register a new user with referral and send OTP",
+                "description": "This endpoint creates a new user with a temporary password, logs referrals, and sends an OTP. user_type : 1-user,2-organization",
+                "operationId": "signUp",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile_prefix",
+                                    "mobile",
+                                    "user_type",
+                                    "fcm_token"
+                                ],
+                                "properties": {
+                                    "mobile_prefix": {
+                                        "description": "Mobile country code prefix",
+                                        "type": "string",
+                                        "example": "+91"
+                                    },
+                                    "mobile": {
+                                        "description": "User's mobile number",
+                                        "type": "string",
+                                        "example": "9876543210"
+                                    },
+                                    "user_type": {
+                                        "description": "1- user,2- company",
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "fcm_token": {
+                                        "description": "fcm_token",
+                                        "type": "string",
+                                        "example": "GDFDFD86676HKKJGG"
+                                    },
+                                    "referral_code": {
+                                        "description": "Referral code of the referring user (optional)",
+                                        "type": "string",
+                                        "example": "ABCD1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User successfully registered and OTP sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "OTP sent successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "user_id": {
+                                                    "description": "ID of the newly created user",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid referral code or other input errors"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unable to process the request at this time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/signin": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User Sign In",
+                "operationId": "1590601a2f468ce0e53462ada67bcfdc",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile"
+                                ],
+                                "properties": {
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "OTP sent"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                }
+            }
+        },
+        "/api/resend-otp": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Resend OTP",
+                "operationId": "5034e3809df3c665692b179099da36f3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile"
+                                ],
+                                "properties": {
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "OTP sent"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                }
+            }
+        },
+        "/api/verify-otp": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify OTP",
+                "operationId": "c4e4be2444463a153f1ca5669741bc89",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile",
+                                    "otp"
+                                ],
+                                "properties": {
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "otp": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP verified successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "your_token_here"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid OTP"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user and invalidate token",
+                "operationId": "ad65cbbd4e9f201619eae184a5961a98",
+                "responses": {
+                    "200": {
+                        "description": "User logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully logged out."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Token missing or invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/update-fcm-token": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Update FCM token for authenticated user",
+                "operationId": "afad6413ff186e4480d51495fd6ad104",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "fcm_token"
+                                ],
+                                "properties": {
+                                    "fcm_token": {
+                                        "type": "string",
+                                        "example": "NEW_FCM_TOKEN_123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "FCM token updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "FCM token updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        
+        "/api/deactivate-account": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Deactivate authenticated user's account",
+                "operationId": "f526b3d3cae7a5320053a50c4ad72b17",
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "No longer interested"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account deactivated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Account deactivated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        
+        "/api/app-config": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get app configuration",
+                "operationId": "f17e54ea9568239eb6b00d4b076c74e8",
+                "responses": {
+                    "200": {
+                        "description": "App config fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "is_guest_login": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reactivate-account": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Reactivate user account",
+                "operationId": "2abaa7eadf301dc1b9109d13c9149b84",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile"
+                                ],
+                                "properties": {
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account reactivated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your account has been reactivated successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "400": {
+                        "description": "Account is already active"
+                    }
+                }
+            }
+        },
+        "/api/blogs": {
+            "get": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Get a list of blogs",
+                "operationId": "393feb67e712ffe8052c83b54689ceb0",
+                "responses": {
+                    "200": {
+                        "description": "A list of blogs",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/api/blog/{id}": {
+            "get": {
+                "tags": [
+                    "Blogs"
+                ],
+                "summary": "Get a blog by ID",
+                "operationId": "92fdf5c0182582715d2439ee4f758be6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "blog details",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Blog not found"
+                    }
+                }
+            }
+        },
+        "/api/sliders": {
+            "get": {
+                "tags": [
+                    "Slider"
+                ],
+                "summary": "Get a list of sliders",
+                "operationId": "eff93414b8482758ab2bcaeb4c3c5566",
+                "responses": {
+                    "200": {
+                        "description": "A list of sliders",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/api/about-app": {
+            "get": {
+                "tags": [
+                    "CMS"
+                ],
+                "summary": "Get About App content",
+                "operationId": "30dfaf968e6733eb902d9377756e2521",
+                "responses": {
+                    "200": {
+                        "description": "CMS content details",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "CMS page not found"
+                    }
+                }
+            }
+        },
+        "/api/privacy-policy": {
+            "get": {
+                "tags": [
+                    "CMS"
+                ],
+                "summary": "Get Privacy Policy content",
+                "operationId": "b7f27cb79141961588b037b054f83a77",
+                "responses": {
+                    "200": {
+                        "description": "CMS content details",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "CMS page not found"
+                    }
+                }
+            }
+        },
+        "/api/terms-of-use": {
+            "get": {
+                "tags": [
+                    "CMS"
+                ],
+                "summary": "Get Terms of Use content",
+                "operationId": "609656873da5639acfc70ca454a9aadb",
+                "responses": {
+                    "200": {
+                        "description": "CMS content details",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "CMS page not found"
+                    }
+                }
+            }
+        },
+        "/api/quick-start": {
+            "get": {
+                "tags": [
+                    "CMS"
+                ],
+                "summary": "Get Quick Start content",
+                "operationId": "712c95c61a4f1b1ad91e5cda7bfaeba1",
+                "responses": {
+                    "200": {
+                        "description": "CMS content details",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "CMS page not found"
+                    }
+                }
+            }
+        },
+        "/api/cart/add/{productId}": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Add a product to the cart",
+                "description": "Adds a product to the user's cart, or updates the quantity if it already exists.",
+                "operationId": "ad44413ab4b45985b66aca077e72c0c3",
+                "parameters": [
+                    {
+                        "name": "productId",
+                        "in": "path",
+                        "description": "ID of the product to add",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "quantity",
+                                    "type",
+                                    "product_type",
+                                    "duration",
+                                    "location_id"
+                                ],
+                                "properties": {
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "type": {
+                                        "type": "integer",
+                                        "example": "1-sponsor,2-adopt,3-adopt renewal"
+                                    },
+                                    "product_type": {
+                                        "type": "integer",
+                                        "example": "1-tree,2-ecommerce"
+                                    },
+                                    "duration": {
+                                        "description": "Duration in years (1, 2, 3) or other units depending on your business logic",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Harish Mogilipuri"
+                                    },
+                                    "occasion": {
+                                        "type": "string",
+                                        "example": "Birthday"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Happy Birthday!"
+                                    },
+                                    "location_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "cart_type": {
+                                        "type": "integer",
+                                        "example": "1 - cart, 2 - direct payment"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product added to cart",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cart": {
+            "get": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "View cart items",
+                "description": "Retrieves the items in the user's cart.",
+                "operationId": "f04320157a67c6aee3f0844a843cae22",
+                "responses": {
+                    "200": {
+                        "description": "Successful retrieval of cart items",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/remove/{cartId}": {
+            "delete": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Remove a product from the cart",
+                "description": "Removes a product from the user's cart.",
+                "operationId": "6a359495ae5e49b2a1f1a8a172b9a268",
+                "parameters": [
+                    {
+                        "name": "cartId",
+                        "in": "path",
+                        "description": "ID of the cart item to remove",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product removed from cart",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cart item not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/clear": {
+            "get": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Clear all products from the cart",
+                "description": "Clear all products from the user's cart.",
+                "operationId": "acd46a03a63b34361f4988b9ef32232d",
+                "responses": {
+                    "200": {
+                        "description": "Product removed from cart",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cart not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/addDetails/{cartId}": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Details added",
+                "description": "Adds a product to the user's cart, or updates the quantity if it already exists.",
+                "operationId": "d0cb731c62a715edf0458f884a3b943f",
+                "parameters": [
+                    {
+                        "name": "cartId",
+                        "in": "path",
+                        "description": "ID of the product to add",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "occasion",
+                                    "message"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Harish Mogilipuri"
+                                    },
+                                    "occasion": {
+                                        "type": "string",
+                                        "example": "Birthday"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Happy Birthday!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Details added to product",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/apply-coupon-all": {
+            "post": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Apply a coupon to all cart items of a user with product_type = 2",
+                "operationId": "ae94f659f907b9c0ba7b97526f87e623",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "coupon_code"
+                                ],
+                                "properties": {
+                                    "coupon_code": {
+                                        "description": "The coupon code to apply to all cart items.",
+                                        "type": "string",
+                                        "example": "SAVE20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coupon applied successfully to all cart items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user_id": {
+                                            "type": "integer",
+                                            "example": 123
+                                        },
+                                        "coupon_code": {
+                                            "type": "string",
+                                            "example": "SAVE20"
+                                        },
+                                        "total_discount_amount": {
+                                            "type": "number",
+                                            "example": 50
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid coupon or no applicable cart items found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid or expired coupon"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found or not authenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "A coupon is already applied to one or more cart items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "A coupon is already applied to one or more cart items. Remove it before adding a new one."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/feed-tree/{campaignId}/donation/initiate": {
+            "post": {
+                "tags": [
+                    "Donations"
+                ],
+                "summary": "Initiate donation payment via Razorpay",
+                "operationId": "3c3f00c60cbe691bfaea5859c1e44071",
+                "parameters": [
+                    {
+                        "name": "campaignId",
+                        "in": "path",
+                        "description": "Campaign ID for the donation",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "amount"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Payment order successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "order_id": {
+                                            "type": "string",
+                                            "example": "order_DjzPzU1A6Xjjtb"
+                                        },
+                                        "amount": {
+                                            "type": "integer",
+                                            "example": 50000
+                                        },
+                                        "currency": {
+                                            "type": "string",
+                                            "example": "INR"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters"
+                    },
+                    "404": {
+                        "description": "Campaign not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/feed-tree/donation-payment/callback": {
+            "post": {
+                "tags": [
+                    "Donations"
+                ],
+                "summary": "Payment callback for verifying Razorpay payment",
+                "operationId": "28aca25cbc8c5624d344b90125a7b595",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "razorpay_order_id",
+                                    "razorpay_payment_id",
+                                    "razorpay_signature",
+                                    "donation_order_id"
+                                ],
+                                "properties": {
+                                    "donation_order_id": {
+                                        "type": "string",
+                                        "example": "DONOR2412180005"
+                                    },
+                                    "razorpay_order_id": {
+                                        "type": "string",
+                                        "example": "order_DjzPzU1A6Xjjtb"
+                                    },
+                                    "razorpay_payment_id": {
+                                        "type": "string",
+                                        "example": "pay_CpXjmfXZ8FgopV"
+                                    },
+                                    "razorpay_signature": {
+                                        "type": "string",
+                                        "example": "9d8b8a7d57d897a09ff3bfa6be82840bbd597f9834cb649b8f7a64b42a9cf70b5"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Donation successfully processed and payment verified",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Donation successfully processed and verified."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid payment verification or missing data"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/my-donations": {
+            "get": {
+                "tags": [
+                    "Donations"
+                ],
+                "summary": "Get a list of donations made by the authenticated user",
+                "operationId": "7fb8f2c3676439827356ba1f604ac258",
+                "responses": {
+                    "200": {
+                        "description": "List of user donations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "campaign_id": {
+                                                "type": "integer",
+                                                "example": 2
+                                            },
+                                            "campaign_name": {
+                                                "type": "string",
+                                                "example": "Save the Forests"
+                                            },
+                                            "donor_name": {
+                                                "type": "string",
+                                                "example": "John Doe"
+                                            },
+                                            "amount": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 500
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2024-12-18T12:34:56Z"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized access"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/faqs": {
+            "get": {
+                "tags": [
+                    "FAQ"
+                ],
+                "summary": "Get a list of all FAQs",
+                "operationId": "c5049b56b2bbb1927ec18c0563a02250",
+                "responses": {
+                    "200": {
+                        "description": "List of FAQs",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "question": {
+                                                "type": "string"
+                                            },
+                                            "answer": {
+                                                "type": "string"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No FAQs found"
+                    }
+                }
+            }
+        },
+        "/api/feed-trees": {
+            "get": {
+                "tags": [
+                    "Feed Trees"
+                ],
+                "summary": "Get a list of feed trees",
+                "operationId": "2cdf0476cf12ef53ef0e1888673464eb",
+                "responses": {
+                    "200": {
+                        "description": "A list of feed trees",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/feed-tree/{id}": {
+            "get": {
+                "tags": [
+                    "Feed Trees"
+                ],
+                "summary": "Get a tree by ID",
+                "operationId": "1d92c1d92970b00377113dce8ec83254",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the campaign",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Campaign details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "campaign_id": {
+                                            "type": "integer"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "raised_amount": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "pending_amount": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "target_amount": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "donors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "donor_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "amount": {
+                                                        "type": "number",
+                                                        "format": "float"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Campaign not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/states": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Get all states",
+                "description": "Get all states.",
+                "operationId": "5fc86bab8dab71984fff49d11545aff6",
+                "responses": {
+                    "200": {
+                        "description": "List of states"
+                    },
+                    "404": {
+                        "description": "States not found"
+                    }
+                }
+            }
+        },
+        "/api/cities/{state_id}": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Get cities by state ID",
+                "description": "Get cities by state ID.",
+                "operationId": "342b1da03876d6d45cad706895c7cf31",
+                "parameters": [
+                    {
+                        "name": "state_id",
+                        "in": "path",
+                        "description": "ID of the state",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of cities"
+                    },
+                    "404": {
+                        "description": "Cities not found"
+                    }
+                }
+            }
+        },
+        "/api/areas/{city_id}": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Get areas by city ID",
+                "description": "Get areas by city ID.",
+                "operationId": "c7777cd352d2c5238a13a079ddacd076",
+                "parameters": [
+                    {
+                        "name": "city_id",
+                        "in": "path",
+                        "description": "ID of the city",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of areas"
+                    },
+                    "404": {
+                        "description": "Areas not found"
+                    }
+                }
+            }
+        },
+        "/api/tree-locations": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Get tree locations",
+                "description": "Get tree locations.",
+                "operationId": "e908228d27830d81054a90b794e1ec97",
+                "responses": {
+                    "200": {
+                        "description": "List of tree locations"
+                    },
+                    "404": {
+                        "description": "Tree locations not found"
+                    }
+                }
+            }
+        },
+        "/api/tree-locations/states": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Get Tree Available states",
+                "description": "Get Tree Available states.",
+                "operationId": "0afb6748622c7831b139439d0a86e09f",
+                "responses": {
+                    "200": {
+                        "description": "List of states"
+                    },
+                    "404": {
+                        "description": "States not found"
+                    }
+                }
+            }
+        },
+        "/api/tree-locations/states/{stateId}/areas": {
+            "get": {
+                "tags": [
+                    "Locations"
+                ],
+                "summary": "Get areas of a state",
+                "description": "Get areas for a state.",
+                "operationId": "bd97014ef266128e17d0b759ab93e117",
+                "parameters": [
+                    {
+                        "name": "stateId",
+                        "in": "path",
+                        "description": "State ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of areas in the state"
+                    },
+                    "404": {
+                        "description": "Areas not found"
+                    }
+                }
+            }
+        },
+        "/api/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get notifications for a user",
+                "operationId": "5136df02a15d24894091df1c403b5322",
+                "responses": {
+                    "200": {
+                        "description": "Notifications retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "message": {
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found or no notifications"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/checkout": {
+            "post": {
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Create a Razorpay Order",
+                "description": "Creates an order in Razorpay based on the user's cart.",
+                "operationId": "0de470f9539cb1e166081e93ce0672b6",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "currency",
+                                    "type",
+                                    "cart_type",
+                                    "product_type"
+                                ],
+                                "properties": {
+                                    "currency": {
+                                        "type": "string",
+                                        "example": "INR"
+                                    },
+                                    "type": {
+                                        "type": "integer",
+                                        "example": "1-sponsor,2-adopt,3-adopt renewal"
+                                    },
+                                    "product_type": {
+                                        "type": "integer",
+                                        "example": "1-tree,2-Ecommerce"
+                                    },
+                                    "cart_type": {
+                                        "type": "integer",
+                                        "example": "1 - cart, 2 - direct payment"
+                                    },
+                                    "shipping_address_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Order created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "order_id": {
+                                            "type": "string",
+                                            "example": "order_id_example"
+                                        },
+                                        "amount": {
+                                            "type": "integer",
+                                            "example": 1000
+                                        },
+                                        "currency": {
+                                            "type": "string",
+                                            "example": "INR"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/payment/callback": {
+            "post": {
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Payment Callback",
+                "description": "Handles the payment callback from Razorpay.",
+                "operationId": "c33e1bba0f44f5b107e06a8949e47f6b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "razorpay_order_id",
+                                    "razorpay_payment_id",
+                                    "razorpay_signature",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "razorpay_order_id": {
+                                        "type": "string"
+                                    },
+                                    "razorpay_payment_id": {
+                                        "type": "string"
+                                    },
+                                    "razorpay_signature": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "integer",
+                                        "example": "1-sponsor,2-adopt,3-adopt renewal,4-ecommerce"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Payment verified successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payment successful!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Payment verification failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Payment verification failed!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "My Orders"
+                ],
+                "summary": "Get a list of orders",
+                "operationId": "debf58326856bf610a1a46c6db8a30cf",
+                "parameters": [
+                    {
+                        "name": "product_type",
+                        "in": "query",
+                        "description": "Filter orders based on product type",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A list of orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No orders found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/order/{id}": {
+            "get": {
+                "tags": [
+                    "My Orders"
+                ],
+                "summary": "Get a Order by ID",
+                "operationId": "bde213b6157de74a82908242932a76d3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order details",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/apply-coupon": {
+            "post": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Apply a coupon to an order",
+                "operationId": "b74a2810d511e28ad9a50137f8b152db",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "order_id",
+                                    "coupon_code"
+                                ],
+                                "properties": {
+                                    "order_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "coupon_code": {
+                                        "type": "string",
+                                        "example": "DISCOUNT10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coupon applied successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "order_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "discount_amount": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 50
+                                        },
+                                        "new_total": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 450
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid coupon or expired"
+                    },
+                    "404": {
+                        "description": "Order not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/remove-coupon": {
+            "post": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Remove applied coupon from an order",
+                "operationId": "45a72821bb550ba0a4d7715e02d92a40",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "order_id"
+                                ],
+                                "properties": {
+                                    "order_id": {
+                                        "description": "The ID of the order from which the coupon should be removed",
+                                        "type": "integer",
+                                        "example": 123
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coupon removed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "order_id": {
+                                            "type": "integer",
+                                            "example": 123
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Coupon removed successfully"
+                                        },
+                                        "total_amount": {
+                                            "type": "number",
+                                            "example": 950
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "No coupon applied to this order",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No coupon applied to this order."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Order not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Order not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/order/{order}/update-shipping-address": {
+            "put": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Update shipping address for an order",
+                "operationId": "9c4a98d7b322087ca879cb75f22f1bd8",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "description": "Order ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "shipping_address_id"
+                                ],
+                                "properties": {
+                                    "shipping_address_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Address updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "No order found to update"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Get a list of products with filters, sorting, search, and pagination",
+                "operationId": "d97d1c3727cbac49708b85f7d11f7d58",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "price_asc",
+                                "price_desc",
+                                "newest",
+                                "oldest",
+                                "top_rated"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product list",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No products found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/product/{id}": {
+            "get": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Get details of a single product",
+                "operationId": "3a462c6271dfd581c8c589efd97cbde4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product details",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/product/{id}/ratings": {
+            "get": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Get ratings and review statistics for a product",
+                "operationId": "a2ab16fa6dd070fb1061f51f14544fb0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rating statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/product/{id}/reviews": {
+            "get": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Get paginated list of reviews for a product",
+                "operationId": "f772f318952101b4b513a33da30915ae",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of reviews",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Update a review for a product",
+                "operationId": "2a4e27108195f9d1724389ce6e879e32",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "rating",
+                                    "review"
+                                ],
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "review": {
+                                        "type": "string",
+                                        "example": "Great product!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Review updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "No review found to update"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Write a review for a product",
+                "operationId": "cbebdd7993031d595887a97a920ee265",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "rating",
+                                    "review"
+                                ],
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "review": {
+                                        "type": "string",
+                                        "example": "Great product!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Review added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Product not found or user hasn't purchased this product"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Get a list of active categories",
+                "operationId": "80940d506299c0a0c88eaaf94cb70443",
+                "responses": {
+                    "200": {
+                        "description": "Categories list",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No categories found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/product/{id}/can-review": {
+            "get": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Check if the user can write a review for a product",
+                "operationId": "889b341d0a9be82492b7c51be5d6fe22",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User is eligible to write a review",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    },
+                    "403": {
+                        "description": "User has not purchased the product"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/coupons": {
+            "get": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Get a list of active coupons",
+                "operationId": "c6ba93c3c6735e27fcc052830b919dc8",
+                "responses": {
+                    "200": {
+                        "description": "coupons list",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No coupons found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/products/recommendation": {
+            "get": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Get list of categories each with 5 latest products",
+                "operationId": "1905be2f3153b1314ca96a9ef26561db",
+                "responses": {
+                    "200": {
+                        "description": "Categories with products fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "category_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "category_name": {
+                                                "type": "string",
+                                                "example": "Indoor Plants"
+                                            },
+                                            "slug": {
+                                                "type": "string",
+                                                "example": "indoor-plants"
+                                            },
+                                            "icon": {
+                                                "type": "string",
+                                                "example": "icon.png"
+                                            },
+                                            "products": {
+                                                "type": "array",
+                                                "items": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 101
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Snake Plant"
+                                                        },
+                                                        "price": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 299.99
+                                                        },
+                                                        "discount_price": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 249.99
+                                                        },
+                                                        "main_image": {
+                                                            "type": "string",
+                                                            "example": "snake-plant.jpg"
+                                                        },
+                                                        "category_id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No categories or products found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/shipping-addresses": {
+            "get": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Get a list of all shipping addresses for the authenticated user",
+                "operationId": "83a425067c6b3e4baba3f552e5bcb468",
+                "responses": {
+                    "200": {
+                        "description": "List of shipping addresses",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/shipping-address": {
+            "post": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Add a new shipping address",
+                "operationId": "fdc7d27fb48df4f2f6aad56ae5a89dcd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "address",
+                                    "city",
+                                    "area",
+                                    "pincode",
+                                    "mobile_number"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "city": {
+                                        "type": "string"
+                                    },
+                                    "area": {
+                                        "type": "string"
+                                    },
+                                    "pincode": {
+                                        "type": "string"
+                                    },
+                                    "mobile_number": {
+                                        "type": "string"
+                                    },
+                                    "default": {
+                                        "description": "Set as default address (true/false)",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Address added successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/shipping-address/{id}": {
+            "put": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Update a shipping address",
+                "operationId": "ab8e0e4d5940361896505a3f0c1c0df6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "address",
+                                    "city",
+                                    "area",
+                                    "pincode",
+                                    "mobile_number"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "city": {
+                                        "type": "string"
+                                    },
+                                    "area": {
+                                        "type": "string"
+                                    },
+                                    "pincode": {
+                                        "type": "string"
+                                    },
+                                    "mobile_number": {
+                                        "type": "string"
+                                    },
+                                    "default": {
+                                        "description": "Set as default address (true/false)",
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Address updated successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Address not found"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Ecommerce"
+                ],
+                "summary": "Delete a shipping address",
+                "operationId": "630d16a96ea520a397b544d6e4d253db",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address deleted successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "Address not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/supervisor/signin": {
+            "post": {
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Supervisor Sign In",
+                "operationId": "4d860b8f302118bfb2e02190430745de",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile"
+                                ],
+                                "properties": {
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "OTP sent"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                }
+            }
+        },
+        "/api/supervisor/resend-otp": {
+            "post": {
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Resend OTP",
+                "operationId": "02965ce428b5a8f48fd9310e5be4133b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile"
+                                ],
+                                "properties": {
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "OTP sent"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                }
+            }
+        },
+        "/api/supervisor/verify-otp": {
+            "post": {
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Verify OTP",
+                "operationId": "4ccf63d775e8c58279f516bcab35d1e5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mobile",
+                                    "otp"
+                                ],
+                                "properties": {
+                                    "mobile": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "otp": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OTP verified successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "your_token_here"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid OTP"
+                    }
+                }
+            }
+        },
+        "/api/supervisor/logout": {
+            "post": {
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Logout Supervisor and invalidate token",
+                "operationId": "7d183cac05b338cf19263e2629df2e1d",
+                "responses": {
+                    "200": {
+                        "description": "Supervisor logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully logged out."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Token missing or invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/supervisor/orders": {
+            "get": {
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Get a list of orders",
+                "operationId": "9592f8cede6cb6609695ff5d64a923a5",
+                "responses": {
+                    "200": {
+                        "description": "A list of orders",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/supervisor/tree-plantation/update": {
+            "post": {
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Update Tree Plantation Details",
+                "description": "Update the tree plantation details including supervisor, location, description, etc.",
+                "operationId": "b8e8bfaf106022cc66fa20cd76e5d23b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "supervisor_id",
+                                    "latitude",
+                                    "longitude",
+                                    "geoId"
+                                ],
+                                "properties": {
+                                    "supervisor_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "order_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "tree_id": {
+                                        "type": "integer",
+                                        "example": "1"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "12.9716"
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "77.5946"
+                                    },
+                                    "geoId": {
+                                        "type": "string",
+                                        "example": "IN-KA"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Tree plantation in the park."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tree plantation details updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tree plantation updated successfully."
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/supervisor/tree-plantation/details/{tree_id}": {
+            "get": {
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Get Tree Plantation Details by Tree ID",
+                "description": "Fetch details of a tree plantation by its Tree ID.",
+                "operationId": "b399482e137c2d347dca9b14b2c2278e",
+                "parameters": [
+                    {
+                        "name": "tree_id",
+                        "in": "path",
+                        "description": "The Tree ID of the plantation to fetch.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tree plantation details fetched successfully"
+                    },
+                    "404": {
+                        "description": "Tree plantation not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/supervisor/tree-plantation/upload-images/{tree_plantation_id}": {
+            "post": {
+                "tags": [
+                    "Supervisor"
+                ],
+                "summary": "Upload multiple images for a tree plantation",
+                "description": "This API allows uploading multiple images for a specific tree plantation.",
+                "operationId": "f7d93bc8fd0261551a6cb127bf8250ba",
+                "parameters": [
+                    {
+                        "name": "tree_plantation_id",
+                        "in": "path",
+                        "description": "The ID of the tree plantation for which images are being uploaded.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "images"
+                                ],
+                                "properties": {
+                                    "images": {
+                                        "type": "array",
+                                        "items": [
+                                            {
+                                                "type": "string",
+                                                "format": "binary"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Images uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Images uploaded successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/trees": {
+            "get": {
+                "tags": [
+                    "Trees"
+                ],
+                "summary": "Get a list of trees",
+                "operationId": "9e8dff2c7fae02fb1f766d5ebefa2a04",
+                "responses": {
+                    "200": {
+                        "description": "A list of trees",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/adopt-trees": {
+            "get": {
+                "tags": [
+                    "Trees"
+                ],
+                "summary": "Get a list of adopt trees",
+                "operationId": "9c0e4c2a642114edb3d6ddace2d5fe9a",
+                "responses": {
+                    "200": {
+                        "description": "A list of adopt trees",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/tree/{id}": {
+            "get": {
+                "tags": [
+                    "Trees"
+                ],
+                "summary": "Get a tree by ID",
+                "operationId": "0904b3ef8fce2c005a53bab14b3c98c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tree details",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tree not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user profile",
+                "operationId": "dd48b9887ac0e98fac70ebd3da3eb645",
+                "responses": {
+                    "200": {
+                        "description": "User profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update user profile",
+                "operationId": "5eecd6f62690794e94b1167a814a9059",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "profile": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "example": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/user/referrals": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get user referrals list",
+                "operationId": "e45836d3d3a06b6a1e80ebec18f728cb",
+                "responses": {
+                    "200": {
+                        "description": "User referrals retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/wishlist/add/{tree}": {
+            "post": {
+                "tags": [
+                    "WishList"
+                ],
+                "summary": "Add a tree to the wish list",
+                "operationId": "0ef0d94ee4397820b90e08ec7f60a992",
+                "parameters": [
+                    {
+                        "name": "tree",
+                        "in": "path",
+                        "description": "ID of the tree to add",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tree added to wish list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tree added to wish list!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/wishlist/remove/{tree}": {
+            "delete": {
+                "tags": [
+                    "WishList"
+                ],
+                "summary": "Remove a tree from the wish list",
+                "operationId": "d863665789867cd880d7c6a4588083b8",
+                "parameters": [
+                    {
+                        "name": "tree",
+                        "in": "path",
+                        "description": "ID of the tree to remove",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tree removed from wish list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tree removed from wish list!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/wishlist": {
+            "get": {
+                "tags": [
+                    "WishList"
+                ],
+                "summary": "Get all trees in the wish list",
+                "operationId": "6a9e5f3a362662290f5bea9a4ed4ef1b",
+                "responses": {
+                    "200": {
+                        "description": "List of trees in the wish list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Product": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "headers": {
+            "Accept": {
+                "description": "Expected response format",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "application/json"
+                }
+            },
+            "Content-Type": {
+                "description": "Format of the request body",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "example": "application/json"
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearer": {
+                "type": "http",
+                "description": "Enter 'Bearer {token}' to access the endpoints.",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Operations related to Auth"
+        },
+        {
+            "name": "CMS",
+            "description": "Operations related to CMS Pages"
+        },
+        {
+            "name": "Cart",
+            "description": "Cart management"
+        },
+        {
+            "name": "FAQ",
+            "description": "Operations related to FAQs"
+        },
+        {
+            "name": "Payment",
+            "description": "Payment management"
+        },
+        {
+            "name": "Ecommerce",
+            "description": "Operations related to Ecommerce"
+        },
+        {
+            "name": "WishList",
+            "description": "API endpoints for managing wish lists"
+        },
+        {
+            "name": "Blogs",
+            "description": "Blogs"
+        },
+        {
+            "name": "Slider",
+            "description": "Slider"
+        },
+        {
+            "name": "Donations",
+            "description": "Donations"
+        },
+        {
+            "name": "Feed Trees",
+            "description": "Feed Trees"
+        },
+        {
+            "name": "Locations",
+            "description": "Locations"
+        },
+        {
+            "name": "Notifications",
+            "description": "Notifications"
+        },
+        {
+            "name": "My Orders",
+            "description": "My Orders"
+        },
+        {
+            "name": "Supervisor",
+            "description": "Supervisor"
+        },
+        {
+            "name": "Trees",
+            "description": "Trees"
+        },
+        {
+            "name": "User",
+            "description": "User"
+        }
+    ]
+}
